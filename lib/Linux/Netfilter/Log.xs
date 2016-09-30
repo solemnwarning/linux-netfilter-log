@@ -55,20 +55,18 @@ int fileno(struct nflog_handle *self)
 int handle_packet(struct nflog_handle *self)
 	CODE:
 		/* TODO: Don't assume 64k buffer?
-		 * BUG: This will leak if the callback throws an exception...
+		 *
+		 * Use of SAVEFREEPV() will implicitly Safefree() the buffer
+		 * when the XSUB returns.
 		*/
-		void *buf = malloc(65536);
-		if(!buf)
-		{
-			croak("Couldn't allocate buffer!");
-		}
+		void *buf;
+		Newxz(buf, 65536, char);
+		SAVEFREEPV(buf);
 
 		ssize_t len = recv(nflog_fd(self), buf, 65536, 0);
 		if(len < 0)
 		{
 			int err = errno;
-
-			free(buf);
 
 			if(err == ENOBUFS)
 			{
@@ -83,8 +81,6 @@ int handle_packet(struct nflog_handle *self)
 		}
 
 		RETVAL = nflog_handle_packet(self, buf, len);
-
-		free(buf);
 
 		if(RETVAL < 0)
 		{
