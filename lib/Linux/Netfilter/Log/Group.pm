@@ -34,14 +34,9 @@ Sets the callback subroutine used to process packets logged in this group.
 	  my ($packet) = @_;
 	  
 	  ...
-	  
-	  return 0; # Success
   });
 
-The C<$packet> is a L<Linux::Netfilter::Log::Packet> reference. The callback
-must return an integer that is greater than or equal to zero, zero being used
-to indicate the callback's processing was successful. The callback's return
-value will be returned by TODO: handle_packet
+The C<$packet> is a L<Linux::Netfilter::Log::Packet> reference.
 
 =head2 set_mode($mode, $range)
 

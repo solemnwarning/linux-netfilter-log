@@ -134,27 +134,15 @@ static int _callback_proxy(struct nflog_g_handle *gh, struct nfgenmsg *nfmsg, st
 	XPUSHs(packet_sv);
 	PUTBACK;
 
-	int ret_count = call_sv(callback_func, G_SCALAR);
+	call_sv(callback_func, G_SCALAR);
 
 	SPAGAIN;
-
-	SV *ret_sv;
-	int ret;
-
-	if(!(ret_count == 1          /* Perl sub returned 1 SV */
-		&& (ret_sv = POPs)   /* Pop it off the stack */
-		&& SvIOK(ret_sv)     /* Can be coerced to an integer */
-		&& (ret = SvIV(ret_sv)) >= 0))
-	{
-		warn("Callback didn't return an integer >= 0, this is undefined behaviour!");
-		ret = 1; /* "some user defined error" as far as nflog is concerned. */
-	}
 
 	PUTBACK;
 	FREETMPS;
 	LEAVE;
 
-	return ret;
+	return 0; /* Success */
 }
 
 MODULE = Linux::Netfilter::Log::Group	PACKAGE = Linux::Netfilter::Log::Group

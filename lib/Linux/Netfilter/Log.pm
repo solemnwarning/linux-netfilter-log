@@ -60,6 +60,19 @@ protocol family.
 Returns the file descriptor of the underlying netlink socket, for polling with
 C<select> or similar.
 
+=head2 recv_and_process_one()
+
+Reads one Netlink message from the socket and processes it, invoking callbacks
+registered with
+L<Group-E<gt>callback_register()|Linux::Netfilter::Log::Group/callback_register($callback)>.
+
+A single message may contain multiple packets, if the callback throws an
+exception, any which have not yet been processesed will be lost.
+
+Returns true on success, false if C<recv()> failed with B<ENOBUFS> (indicating
+the buffer filled up and some messages have been lost). Any other C<recv()>
+errors will trigger an exception.
+
 =head1 SEE ALSO
 
 L<Linux::Netfilter::Log::Group>

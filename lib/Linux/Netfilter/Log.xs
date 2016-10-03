@@ -52,7 +52,7 @@ int fileno(struct nflog_handle *self)
 	OUTPUT:
 		RETVAL
 
-int handle_packet(struct nflog_handle *self)
+SV *recv_and_process_one(struct nflog_handle *self)
 	CODE:
 		/* TODO: Don't assume 64k buffer?
 		 *
@@ -66,30 +66,28 @@ int handle_packet(struct nflog_handle *self)
 		ssize_t len = recv(nflog_fd(self), buf, 65536, 0);
 		if(len < 0)
 		{
-			int err = errno;
-
-			if(err == ENOBUFS)
+			if(errno == ENOBUFS)
 			{
-				/* TODO: Return some special value to indicate
-				 * ENOBUFS to the caller.
-				*/
-				warn("recv returned ENOBUFS - the buffer filled up!");
-				XSRETURN(0);
+				XSRETURN_NO;
 			}
 
 			croak("recv: %s", strerror(errno));
 		}
 
-		RETVAL = nflog_handle_packet(self, buf, len);
+		/* nflog_handle_packet() defers to the old nfnl_handle_packet()
+		 * API which has poor error handling; errno isn't initialised
+		 * for any internal errors.
+		 *
+		 * On top of that, all NFLOG messages seem to cause an error
+		 * after the packets have been processsed - perhaps a malformed
+		 * trailer or bad length?
+		 *
+		 * So... ignore the return value, assume everything was fine.
+		 * ugh.
+		*/
 
-		if(RETVAL < 0)
-		{
-			/* Most error conditions within nflog_handle_packet()
-			 * don't actually initialise errno and seem to pop up
-			 * with annoying regularity... ugh.
-			*/
-			//warn("nflog_handle_packet returned %d", RETVAL);
-		}
+		nflog_handle_packet(self, buf, len);
+		RETVAL = &PL_sv_yes;
 
 	OUTPUT:
 		RETVAL
