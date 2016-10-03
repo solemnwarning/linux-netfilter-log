@@ -80,7 +80,7 @@ protocol family.
 
 =head2 bind_group($group)
 
-Creates a new L<Linux::Netfilter::Group> object bound to the chosen group
+Creates a new L<Linux::Netfilter::Log::Group> object bound to the chosen group
 number. Throws on failure.
 
 =head2 fileno()

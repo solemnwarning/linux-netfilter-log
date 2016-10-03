@@ -34,7 +34,24 @@ The C<$packet> is a L<Linux::Netfilter::Log::Packet> reference.
 
 =head2 set_mode($mode, $range)
 
-...
+Sets the amount of data to be copied to userspace for each packet logged to the
+given group.
+
+=over
+
+=item C<NFULNL_COPY_NONE>
+
+Do not copy any data.
+
+=item C<NFULNL_COPY_META>
+
+Copy only packet metadata.
+
+=item C<NFULNL_COPY_PACKET>
+
+Copy entire packet. Packets larger than C<$range> will be truncated.
+
+=back
 
 =head2 set_nlbufsiz($size)
 
