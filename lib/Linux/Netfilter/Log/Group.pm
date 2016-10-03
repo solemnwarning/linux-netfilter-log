@@ -1,10 +1,11 @@
 =head1 NAME
 
-Linux::Netfilter::Log::Group - Recieve packets for a particular C<NFLOG> group.
+Linux::Netfilter::Log::Group - Recieve packets for a particular C<NFLOG> group
 
 =head1 DESCRIPTION
 
-...
+This object represents an B<NFLOG> group to which we are bound and receiving
+packets from.
 
 =cut
 
@@ -37,15 +38,19 @@ The C<$packet> is a L<Linux::Netfilter::Log::Packet> reference.
 
 =head2 set_nlbufsiz($size)
 
-...
+This method sets the size (in bytes) of the buffer that is used to stack log
+messages in nflog.
 
 =head2 set_qthresh($qthresh)
 
-...
+This method determines the maximum number of log entries to queue in the kernel
+until it is pushed to userspace. This can be overridden by the B<NFLOG>
+B<iptables> target.
 
 =head2 set_timeout($timeout)
 
-...
+This method determines the maximum time (in I<centiseconds>) that a logged
+packet will be queued in the kernel before being pushed to userspace.
 
 =head2 set_flags($flags)
 

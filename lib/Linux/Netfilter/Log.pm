@@ -1,14 +1,35 @@
 =head1 NAME
 
-Linux::Netfilter::Log - Read packets logged using the C<NFLOG> mechanism
+Linux::Netfilter::Log - Read packets logged using the B<NFLOG> mechanism
 
 =head1 SYNOPSIS
 
-...
+  use Linux::Netfilter::Log qw(:constants);
+  use Socket qw(PF_INET);
+  
+  my $log = Linux::Netfilter::Log->open();
+  
+  eval { $log->unbind_pf(PF_INET) };
+  $log->bind_pf(PF_INET);
+  
+  my $group = $log->bind_group(0);
+  
+  $group->callback_register(sub
+  {
+	  my ($packet) = @_;
+	  
+	  ...
+  });
+  
+  while(1)
+  {
+	  $log->recv_and_process_one() or warn "Buffer filled!";
+  }
 
 =head1 DESCRIPTION
 
-...
+This module provides a wrapper around B<libnetfilter_log>, allowing a Perl
+program to process packets logged using the B<NFLOG> iptables target.
 
 =head1 CONSTANTS
 
