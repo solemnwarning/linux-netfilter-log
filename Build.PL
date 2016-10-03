@@ -10,7 +10,7 @@ if($^O ne "linux")
 
 Module::Build->new(
 	dist_name     => "Linux-Netfilter-Log",
-	dist_version  => "0.01",
+	dist_version  => "1.0",
 	dist_abstract => "Linux netfilter logging (libnetfilter_log) wrapper",
 	dist_author   => [ "Daniel Collins <daniel.collins\@smoothwall.net>" ],
 	

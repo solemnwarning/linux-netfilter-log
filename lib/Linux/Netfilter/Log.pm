@@ -52,6 +52,8 @@ use Linux::Netfilter::Log::Packet;
 require XSLoader;
 XSLoader::load("Linux::Netfilter::Log");
 
+our $VERSION = "1.0";
+
 # Our @EXPORT_OK gets initialised by the ::Constants module.
 our @EXPORT_OK;
 our %EXPORT_TAGS = (
