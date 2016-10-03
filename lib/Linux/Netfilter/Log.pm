@@ -55,6 +55,11 @@ family (ie. PF_INET, PF_INET6, etc).
 Unbinds the given nflog handle from processing packets belonging to the given
 protocol family.
 
+=head2 bind_group($group)
+
+Creates a new L<Linux::Netfilter::Group> object bound to the chosen group
+number. Throws on failure.
+
 =head2 fileno()
 
 Returns the file descriptor of the underlying netlink socket, for polling with

@@ -16,13 +16,6 @@ package Linux::Netfilter::Log::Group;
 require XSLoader;
 XSLoader::load("Linux::Netfilter::Log::Group");
 
-=head1 CLASS METHODS
-
-=head2 bind_group($log, $group)
-
-Constructor. Takes a reference to a L<Linux::Netfilter::Log> object and the
-group number to bind to.
-
 =head1 INSTANCE METHODS
 
 =head2 callback_register($callback)

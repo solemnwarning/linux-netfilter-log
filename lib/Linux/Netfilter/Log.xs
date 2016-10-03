@@ -11,6 +11,8 @@
 
 #include "ppport.h"
 
+#include "linux_netfilter_log.h"
+
 MODULE = Linux::Netfilter::Log	PACKAGE = Linux::Netfilter::Log
 
 struct nflog_handle* open(const char *class)
@@ -44,6 +46,40 @@ void unbind_pf(struct nflog_handle *self, uint16_t pf)
 		{
 			croak("nflog_unbind_pf: %s", strerror(errno));
 		}
+
+struct perl_nflog_group* bind_group(SV *self, uint16_t group)
+	CODE:
+		/* Need to do the typemap's job here as we need access to the
+		 * actual SV to create a reference further down...
+		*/
+		if(!(sv_isobject(self)
+			&& sv_derived_from(self, "Linux::Netfilter::Log")
+			&& SvTYPE(SvRV(self)) == SVt_PVMG))
+		{
+			croak("Linux::Netfilter::Log->bind_group() -- self is not a Linux::Netfilter::Log");
+		}
+
+		struct nflog_handle *log_h = (struct nflog_handle*)(SvIV((SV*)SvRV(self)));
+
+		Newxz(RETVAL, 1, struct perl_nflog_group*);
+
+		RETVAL->g_handle = nflog_bind_group(log_h, group);
+		if(RETVAL->g_handle == NULL)
+		{
+			int err = errno;
+			Safefree(RETVAL);
+
+			croak("nflog_bind_group: %s", strerror(err));
+		}
+
+		/* Stash a reference to us within the Group object so we can't
+		 * be destroyed before it.
+		*/
+		SvREFCNT_inc(self);
+		RETVAL->handle = self;
+
+	OUTPUT:
+		RETVAL
 
 int fileno(struct nflog_handle *self)
 	CODE:

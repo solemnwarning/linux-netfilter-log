@@ -11,13 +11,7 @@
 
 #include "ppport.h"
 
-struct perl_nflog_group
-{
-	SV                    *handle;
-	struct nflog_g_handle *g_handle;
-
-	CV *callback;
-};
+#include "linux_netfilter_log.h"
 
 static void _packet_copy_dev(HV *packet, const char *key, struct nflog_data *nfad, uint32_t (*func)(struct nflog_data*))
 {
@@ -146,37 +140,6 @@ static int _callback_proxy(struct nflog_g_handle *gh, struct nfgenmsg *nfmsg, st
 }
 
 MODULE = Linux::Netfilter::Log::Group	PACKAGE = Linux::Netfilter::Log::Group
-
-struct perl_nflog_group* bind_group(const char *class, SV *log, uint16_t group)
-	CODE:
-		if(!(sv_isobject(log)
-			&& sv_derived_from(log, "Linux::Netfilter::Log")
-			&& SvTYPE(SvRV(log)) == SVt_PVMG))
-		{
-			croak("Linux::Netfilter::Log::Group->bind_group() -- log is not a Linux::Netfilter::Log");
-		}
-
-		struct nflog_handle *log_h = (struct nflog_handle*)(SvIV((SV*)SvRV(log)));
-
-		Newxz(RETVAL, 1, struct perl_nflog_group*);
-
-		RETVAL->g_handle = nflog_bind_group(log_h, group);
-		if(RETVAL->g_handle == NULL)
-		{
-			int err = errno;
-			Safefree(RETVAL);
-
-			croak("nflog_bind_group: %s", strerror(err));
-		}
-
-		/* Keep a reference to the Linux::Netfilter::Log object so it
-		 * can't be destroyed before us.
-		*/
-		SvREFCNT_inc(log);
-		RETVAL->handle = log;
-
-	OUTPUT:
-		RETVAL
 
 void DESTROY(struct perl_nflog_group *self)
 	CODE:
