@@ -9,4 +9,7 @@ constant "NFULNL_COPY_NONE";
 constant "NFULNL_COPY_META";
 constant "NFULNL_COPY_PACKET";
 
+constant "NFULNL_CFG_F_SEQ";
+constant "NFULNL_CFG_F_SEQ_GLOBAL";
+
 write_output $ARGV[0];

@@ -248,3 +248,10 @@ void set_timeout(struct perl_nflog_group *self, uint32_t timeout)
 		{
 			croak("nflog_set_timeout: %s", strerror(errno));
 		}
+
+void set_flags(struct perl_nflog_group *self, uint16_t flags)
+	CODE:
+		if(nflog_set_flags(self->g_handle, flags) == -1)
+		{
+			croak("nflog_set_flags: %s", strerror(errno));
+		}

@@ -59,6 +59,24 @@ value will be returned by TODO: handle_packet
 
 ...
 
+=head2 set_flags($flags)
+
+Set the nflog flags for this group. Takes a bitwise OR'd set of the following:
+
+=over
+
+=item C<NFULNL_CFG_F_SEQ>
+
+This enables local nflog sequence numbering (see
+L<Packet-E<gt>seq()|Linux::Netfilter::Log::Packet/seq()>).
+
+=item C<NFULNL_CFG_F_SEQ_GLOBAL>
+
+This enables global nflog sequence numbering (see
+L<Packet-E<gt>seq_global()|Linux::Netfilter::Log::Packet/seq_global()>).
+
+=back
+
 =head1 SEE ALSO
 
 L<Linux::Netfilter::Log>, L<Linux::Netfilter::Log::Packet>

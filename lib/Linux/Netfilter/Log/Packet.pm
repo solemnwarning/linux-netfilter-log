@@ -169,10 +169,12 @@ sub gid { (shift)->{gid} }
 
 Returns the "local" sequence number.
 
-The local sequence number is an incrementing counter that increases each time
-the relevant B<NFLOG> rule is triggered.
+The local sequence number is an incrementing counter on B<THIS NFLOG HANDLE>
+that increases each time a packet is received for a group which has local
+sequence numbering enabled.
 
-This must be enabled by... TODO
+This must be enabled using
+L<Group-E<gt>set_flags()|Linux::Netfilter::Log::Group/set_flags($flags)>.
 
 =cut
 
@@ -185,7 +187,8 @@ Returns the "global" sequence number.
 The global sequence number is an incrementing counter that increases each time
 any B<NFLOG> rule is triggered.
 
-This must be enabled by... TODO
+This must be enabled using
+L<Group-E<gt>set_flags()|Linux::Netfilter::Log::Group/set_flags($flags)>.
 
 =cut
 
