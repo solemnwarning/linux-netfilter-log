@@ -49,10 +49,10 @@ use Linux::Netfilter::Log::Constants;
 use Linux::Netfilter::Log::Group;
 use Linux::Netfilter::Log::Packet;
 
-require XSLoader;
-XSLoader::load("Linux::Netfilter::Log");
-
 our $VERSION = "1.0";
+
+require XSLoader;
+XSLoader::load("Linux::Netfilter::Log", $VERSION);
 
 # Our @EXPORT_OK gets initialised by the ::Constants module.
 our @EXPORT_OK;
