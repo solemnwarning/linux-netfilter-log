@@ -13,6 +13,16 @@
 
 #include "linux_netfilter_log.h"
 
+/* Size of recv() buffer used to read Netlink messages.
+ *
+ * I haven't managed to find any concrete max size for how big this can be, but
+ * 64k seems significantly bigger than any suggestion or reasonable guesses I've
+ * read. I haven't (quite) managed to overflow this using any sensible
+ * parameters, but if you want to copy large ranges of the packet payload AND
+ * queue many in the kernel at once, you may run into issues.
+*/
+#define RECV_BUFSIZE 65536
+
 MODULE = Linux::Netfilter::Log	PACKAGE = Linux::Netfilter::Log
 
 struct nflog_handle* open(const char *class)
@@ -90,16 +100,14 @@ int fileno(struct nflog_handle *self)
 
 SV *recv_and_process_one(struct nflog_handle *self)
 	CODE:
-		/* TODO: Don't assume 64k buffer?
-		 *
-		 * Use of SAVEFREEPV() will implicitly Safefree() the buffer
+		/* Use of SAVEFREEPV() will implicitly Safefree() the buffer
 		 * when the XSUB returns.
 		*/
 		void *buf;
-		Newxz(buf, 65536, char);
+		Newxz(buf, RECV_BUFSIZE, char);
 		SAVEFREEPV(buf);
 
-		ssize_t len = recv(nflog_fd(self), buf, 65536, 0);
+		ssize_t len = recv(nflog_fd(self), buf, RECV_BUFSIZE, 0);
 		if(len < 0)
 		{
 			if(errno == ENOBUFS)
@@ -108,6 +116,11 @@ SV *recv_and_process_one(struct nflog_handle *self)
 			}
 
 			croak("recv: %s", strerror(errno));
+		}
+		else if(len == RECV_BUFSIZE)
+		{
+			warn("recv() returned the buffer size (%u), the message may have been truncated!",
+				(unsigned int)(RECV_BUFSIZE));
 		}
 
 		/* nflog_handle_packet() defers to the old nfnl_handle_packet()

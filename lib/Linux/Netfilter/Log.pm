@@ -101,6 +101,18 @@ Returns true on success, false if C<recv()> failed with B<ENOBUFS> (indicating
 the buffer filled up and some messages have been lost). Any other C<recv()>
 errors will trigger an exception.
 
+=head1 BUGS
+
+The size of the buffer used to read netlink messages is currently fixed at 64k.
+
+This is probably bigger than most people need, but if you intend to copy large
+packet payloads from the kernel B<AND> queue multiple packets at a time, it may
+not be big enough (C<recv_and_process_one()> will emit warnings upon possible
+truncation).
+
+I will change this to be dynamically sized automatically in the future if I
+come up with an efficient way to do it (suggestions welcome).
+
 =head1 SEE ALSO
 
 L<Linux::Netfilter::Log::Group>
