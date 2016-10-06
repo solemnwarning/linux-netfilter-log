@@ -25,7 +25,7 @@ Returns the link layer type, such as C<ARPHRD_ETHER> - see F<linux/if_arp.h>.
 
 =cut
 
-sub hw_type { (shift)->{hwtype} }
+sub hw_type { (shift)->{hw_type} }
 
 =head2 hw_header()
 
@@ -33,7 +33,7 @@ Returns the link layer header.
 
 =cut
 
-sub hw_header { (shift)->{hwhdr} }
+sub hw_header { (shift)->{hw_header} }
 
 =head2 hw_protocol()
 
@@ -53,7 +53,7 @@ POSTROUTING and a successful ARP request, so cannot currently be retrieved.
 
 =cut
 
-sub hw_addr { (shift)->{hw} }
+sub hw_addr { (shift)->{hw_addr} }
 
 =head2 payload()
 

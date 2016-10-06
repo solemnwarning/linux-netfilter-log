@@ -50,7 +50,7 @@ static SV *_make_packet_obj(struct nflog_data *nfad)
 		}
 	}
 
-	hv_store(packet, "hwtype", strlen("hwtype"), newSVuv(nflog_get_hwtype(nfad)), 0);
+	hv_store(packet, "hw_type", strlen("hw_type"), newSVuv(nflog_get_hwtype(nfad)), 0);
 
 	{
 		u_int16_t len = nflog_get_msg_packet_hwhdrlen(nfad);
@@ -58,7 +58,7 @@ static SV *_make_packet_obj(struct nflog_data *nfad)
 
 		if(len > 0 && header != NULL)
 		{
-			hv_store(packet, "hwhdr", strlen("hwhdr"), newSVpvn(header, len), 0);
+			hv_store(packet, "hw_header", strlen("hw_header"), newSVpvn(header, len), 0);
 		}
 	}
 
@@ -82,7 +82,7 @@ static SV *_make_packet_obj(struct nflog_data *nfad)
 		struct nfulnl_msg_packet_hw *hw = nflog_get_packet_hw(nfad);
 		if(hw != NULL)
 		{
-			hv_store(packet, "hw", strlen("hw"), newSVpvn(hw->hw_addr, sizeof(hw->hw_addr)), 0);
+			hv_store(packet, "hw_addr", strlen("hw_addr"), newSVpvn(hw->hw_addr, sizeof(hw->hw_addr)), 0);
 		}
 	}
 
